@@ -30,6 +30,7 @@
 #include <linux/skbuff.h>
 #include <net/pkt_sched.h>
 #include <net/inet_ecn.h>
+#include "../sch_testbed.h" /* only used for testbed */
 
 #define QUEUE_THRESHOLD 10000
 #define DQCOUNT_INVALID -1
@@ -74,6 +75,9 @@ struct pie_sched_data {
 	struct pie_vars vars;
 	struct pie_stats stats;
 	struct timer_list adapt_timer;
+#ifdef IS_TESTBED
+	struct testbed_metrics testbed;
+#endif
 };
 
 static void pie_params_init(struct pie_params *params)
@@ -167,6 +171,9 @@ static int pie_qdisc_enqueue(struct sk_buff *skb, struct Qdisc *sch,
 
 out:
 	q->stats.dropped++;
+#ifdef IS_TESTBED
+	testbed_inc_drop_count(skb, &q->testbed);
+#endif
 	return qdisc_drop(skb, sch, to_free);
 }
 
@@ -445,6 +452,9 @@ static int pie_init(struct Qdisc *sch, struct nlattr *opt)
 	pie_params_init(&q->params);
 	pie_vars_init(&q->vars);
 	sch->limit = q->params.limit;
+#ifdef IS_TESTBED
+	testbed_metrics_init(&q->testbed);
+#endif
 
 	setup_timer(&q->adapt_timer, pie_timer, (unsigned long)sch);
 
@@ -517,6 +527,9 @@ static struct sk_buff *pie_qdisc_dequeue(struct Qdisc *sch)
 		return NULL;
 
 	pie_process_dequeue(sch, skb);
+#ifdef IS_TESTBED
+	testbed_add_metrics(skb, &((struct pie_sched_data *) qdisc_priv(sch))->testbed);
+#endif
 	return skb;
 }
 
