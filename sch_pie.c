@@ -162,6 +162,12 @@ static int pie_qdisc_enqueue(struct sk_buff *skb, struct Qdisc *sch,
 
 	/* we can enqueue the packet */
 	if (enqueue) {
+#ifdef IS_TESTBED
+		/* Timestamp the packet so we can calculate the queue length
+		 * when we collect metrics in the dequeue process.
+		 */
+		__net_timestamp(skb);
+#endif
 		q->stats.packets_in++;
 		if (qdisc_qlen(sch) > q->stats.maxq)
 			q->stats.maxq = qdisc_qlen(sch);
