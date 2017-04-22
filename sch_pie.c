@@ -30,7 +30,7 @@
 #include <linux/skbuff.h>
 #include <net/pkt_sched.h>
 #include <net/inet_ecn.h>
-#include "../common/sch_testbed.h" /* only used for testbed */
+#include "testbed.h" /* see README for where this is located */
 
 #define QUEUE_THRESHOLD 10000
 #define DQCOUNT_INVALID -1
