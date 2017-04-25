@@ -6,3 +6,5 @@ Module.symvers
 modules.order
 sch_pie.ko
 sch_pie.mod.c
+sch_pie.mod.o
+sch_pie.o
