@@ -43,7 +43,7 @@ To update:
 cd path-to-linux-tree
 cd net/sched
 # modify the range to fit
-git format-patch -o /tmp/sched ac4a02c5a..HEAD -- sch_pie.c
+git format-patch -o /tmp/sched e5a4b17da..HEAD -- sch_pie.c
 ```
 
 ```bash
